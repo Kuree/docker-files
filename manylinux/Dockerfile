@@ -3,7 +3,7 @@ FROM quay.io/pypa/manylinux1_x86_64
 LABEL description="A docker image for building portable Python linux binary wheels using modern GCC"
 LABEL maintainer="keyi@cs.stanford.edu"
 
-ARG GCC_VERSION=8.3.0
+ARG GCC_VERSION=10.2.0
 ARG GCC_PATH=/usr/local/gcc-$GCC_VERSION
 
 RUN yum -y update && yum -y install \
@@ -27,8 +27,9 @@ RUN cd /tmp \
         --enable-checking=release \
         --enable-languages=c,c++ \
         --disable-multilib \
+        --disable-libsanitizer \
         --program-suffix=-$GCC_VERSION \
-    && make -j12 \
+    && make -j \
     && make install-strip \
     && cd /tmp \
     && rm -rf /tmp/*
@@ -45,8 +46,8 @@ RUN cd /tmp \
 
 # env setup
 ARG PYTHON_BIN=/opt/python/cp37-cp37m/bin/
-ENV CC=/usr/local/gcc-8.3.0/bin/gcc-8.3.0
-ENV CXX=/usr/local/gcc-8.3.0/bin/g++-8.3.0
+ENV CC="/usr/local/gcc-${GCC_VERSION}/bin/gcc-${GCC_VERSION}"
+ENV CXX="/usr/local/gcc-${GCC_VERSION}/bin/g++-${GCC_VERSION}"
 ENV PATH="/usr/local/bin/:${PYTHON_BIN}:${PATH}"
 
 RUN pip install cmake twine auditwheel
