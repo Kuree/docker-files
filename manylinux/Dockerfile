@@ -45,7 +45,7 @@ RUN cd /tmp \
     && rm -rf /tmp/*
 
 # env setup
-ARG PYTHON_BIN=/opt/python/cp37-cp37m/bin/
+ARG PYTHON_BIN=/opt/python/cp38-cp38/bin/
 ENV CC="/usr/local/gcc-${GCC_VERSION}/bin/gcc-${GCC_VERSION}"
 ENV CXX="/usr/local/gcc-${GCC_VERSION}/bin/g++-${GCC_VERSION}"
 ENV PATH="/usr/local/bin/:${PYTHON_BIN}:${PATH}"
