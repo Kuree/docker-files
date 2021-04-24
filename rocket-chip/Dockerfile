@@ -11,10 +11,11 @@ RUN mkdir /working/ && \
     dpkg -i sbt-$SBT_VERSION.deb && \
     rm sbt-$SBT_VERSION.deb && \
     apt-get update && \
-    apt-get install --no-install-recommends -y python3 default-jre sbt wget && \
+    apt-get install --no-install-recommends -y python3 default-jre sbt wget time && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /working/
 
 RUN update-alternatives --install /bin/python python /bin/python3 100
-
+# Switch shell to bash
+RUN update-alternatives --install /bin/sh sh /bin/bash 100
