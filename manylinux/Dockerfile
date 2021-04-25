@@ -50,5 +50,8 @@ ENV CC="/usr/local/gcc-${GCC_VERSION}/bin/gcc-${GCC_VERSION}"
 ENV CXX="/usr/local/gcc-${GCC_VERSION}/bin/g++-${GCC_VERSION}"
 ENV PATH="/usr/local/bin/:${PYTHON_BIN}:${PATH}"
 
-RUN pip install cmake twine auditwheel
+# 3.4+ requires rust to build
+RUN pip install cryptography==3.3 && \
+    pip install cmake twine auditwheel && \
+    rm -rf /root/.cache/pip
 
