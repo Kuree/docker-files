@@ -3,7 +3,7 @@ FROM quay.io/pypa/manylinux1_x86_64
 LABEL description="A docker image for building portable Python linux binary wheels using modern GCC"
 LABEL maintainer="keyi@cs.stanford.edu"
 
-ARG GCC_VERSION=10.2.0
+ARG GCC_VERSION=11.2.0
 ARG GCC_PATH=/usr/local/gcc-$GCC_VERSION
 
 RUN yum -y update && yum -y install \
