@@ -1,16 +1,8 @@
-FROM quay.io/pypa/manylinux1_x86_64
-
-LABEL description="A docker image for building portable Python linux binary wheels using modern GCC"
-LABEL maintainer="keyi@cs.stanford.edu"
+FROM keyiz/manylinux:10 as build
+WORKDIR /
 
 ARG GCC_VERSION=11.2.0
 ARG GCC_PATH=/usr/local/gcc-$GCC_VERSION
-
-RUN yum -y update && yum -y install \
-    curl \
-    bison \
-    flex \
-    && yum clean all
 
 RUN cd /tmp \
     && curl -L -o gcc.tar.gz "https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz" \
@@ -29,10 +21,22 @@ RUN cd /tmp \
         --disable-multilib \
         --disable-libsanitizer \
         --program-suffix=-$GCC_VERSION \
-    && make -j \
+    && make -j4 \
     && make install-strip \
     && cd /tmp \
     && rm -rf /tmp/*
+
+
+
+FROM quay.io/pypa/manylinux1_x86_64
+
+LABEL description="A docker image for building portable Python linux binary wheels using modern GCC"
+LABEL maintainer="keyi@cs.stanford.edu"
+
+ARG GCC_VERSION=11.2.0
+ARG GCC_PATH=/usr/local/gcc-$GCC_VERSION
+
+COPY --from=build /usr/local/gcc-$GCC_VERSION /usr/local/gcc-$GCC_VERSION
 
 RUN cd /tmp \
     && curl -O ftp://sourceware.org/pub/binutils/snapshots/binutils-2.29.1.tar.gz \
@@ -43,6 +47,7 @@ RUN cd /tmp \
     && make install \
     && cd /tmp \
     && rm -rf /tmp/*
+
 
 # env setup
 ARG PYTHON_BIN=/opt/python/cp38-cp38/bin/
